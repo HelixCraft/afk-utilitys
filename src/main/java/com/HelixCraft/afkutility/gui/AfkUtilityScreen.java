@@ -45,8 +45,12 @@ public class AfkUtilityScreen extends Screen {
                 // Tab Buttons + Quick Toggles
                 this.addRenderableWidget(
                                 Button.builder(Component.literal("Anti-AFK"), button -> switchTab(Tab.ANTI_AFK))
-                                                .bounds(10, tabY, btnWidth, btnHeight)
+                                                .bounds(10, tabY, btnWidth - 38, btnHeight)
                                                 .build());
+                this.addRenderableWidget(CycleButton.onOffBuilder(antiAfkConfig.enabled)
+                                .displayOnlyValue()
+                                .create(10 + btnWidth - 33, tabY, 33, 20, Component.empty(),
+                                                (button, value) -> antiAfkConfig.enabled = value));
                 tabY += btnHeight + btnGap;
 
                 // Auto-Eat

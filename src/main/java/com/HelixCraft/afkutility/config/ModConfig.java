@@ -21,6 +21,7 @@ public class ModConfig {
     public AutoLog autoLog = new AutoLog();
 
     public static class AntiAfk {
+        public boolean enabled = true;
         // Actions
         public boolean jump = false;
         public boolean swing = false;

@@ -31,6 +31,12 @@ public class AntiAfk {
 
         ModConfig.AntiAfk config = ConfigManager.get().antiAfk;
 
+        if (!config.enabled) {
+            if (wasSpinning)
+                wasSpinning = false;
+            return;
+        }
+
         // Jump
         if (config.jump) {
             if (jumpTimer-- <= 0) {
