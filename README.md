@@ -33,7 +33,7 @@ An advanced utility mod for Minecraft Fabric that manages AFK (Away From Keyboar
 Simulates natural player activity to prevent server kicks:
 
 - **Auto-Jump**: Randomized jumping intervals for natural appearance
-- **Auto-Swing**: Periodic hand swinging with block/entity interaction (left-click)
+- **Auto-Swing**: Periodic hand swinging with **Attack** (left-click) or **Use** (right-click) interaction. Perfect for automated farming (breaking blocks) or flipping levers.
 - **Auto-Sneak**: Configurable crouch timing and intervals
 - **Strafe Mode**: Automatic left-right movement to avoid coordinate-based detection
 - **Spin Mode**:
