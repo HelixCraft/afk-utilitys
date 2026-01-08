@@ -11,13 +11,17 @@ import java.io.IOException;
 
 public class ConfigManager {
     private static ModConfig config;
-    private static final File CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("afkutility.json").toFile();
+    private static final File CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("afkutility.json")
+            .toFile();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static void load() {
         if (CONFIG_FILE.exists()) {
             try (FileReader reader = new FileReader(CONFIG_FILE)) {
                 config = GSON.fromJson(reader, ModConfig.class);
+                if (config == null) {
+                    config = new ModConfig();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 config = new ModConfig();
