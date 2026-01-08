@@ -52,18 +52,15 @@ public class AntiAfk {
             }
         }
 
-        // Swing (Attack/Interact)
+        // Swing (Use + Visual Swing)
         if (config.swing) {
             if (swingTimer-- <= 0) {
                 // Always visual swing
                 client.player.swing(InteractionHand.MAIN_HAND);
 
-                // Perform interaction
-                if (config.swingMode == ModConfig.AntiAfk.SwingMode.Attack) {
-                    ((com.HelixCraft.afkutility.mixin.MinecraftAccessor) client).callStartAttack();
-                } else {
-                    ((com.HelixCraft.afkutility.mixin.MinecraftAccessor) client).callStartUseItem();
-                }
+                // Always right-click (Use)
+                ((com.HelixCraft.afkutility.mixin.MinecraftAccessor) client).callStartUseItem();
+
                 resetSwingTimer(config);
             }
         }

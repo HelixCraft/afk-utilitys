@@ -129,18 +129,11 @@ public class AfkUtilityScreen extends Screen {
                 y += 24;
 
                 this.addRenderableWidget(CycleButton.onOffBuilder(antiAfkConfig.swing)
-                                .create(xBase, y, 110, 20, Component.literal("Swing"),
+                                .create(xBase, y, configWidth, 20, Component.literal("Swing (Interact)"),
                                                 (button, value) -> antiAfkConfig.swing = value));
 
                 this.addRenderableWidget(
-                                CycleButton.<ModConfig.AntiAfk.SwingMode>builder(mode -> Component.literal(mode.name()))
-                                                .withValues(ModConfig.AntiAfk.SwingMode.values())
-                                                .withInitialValue(antiAfkConfig.swingMode)
-                                                .create(xBase + 115, y, 65, 20, Component.empty(),
-                                                                (button, value) -> antiAfkConfig.swingMode = value));
-
-                this.addRenderableWidget(
-                                new IntSlider(xBase + 185, y, 70, 20, "", "s", 1, 60,
+                                new IntSlider(xBase + configWidth + gap, y, sliderWidth, 20, "Interval: ", "s", 1, 60,
                                                 antiAfkConfig.swingInterval, val -> antiAfkConfig.swingInterval = val));
                 y += 24;
 
