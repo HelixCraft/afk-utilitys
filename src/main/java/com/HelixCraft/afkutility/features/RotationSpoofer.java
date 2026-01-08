@@ -10,6 +10,8 @@ public class RotationSpoofer {
     private static boolean isSpoofing = false;
 
     public static void spoof(LocalPlayer player) {
+        if (ConfigManager.get() == null)
+            return;
         ModConfig.AntiAfk config = ConfigManager.get().antiAfk;
         if (config.spin && config.spinMode == ModConfig.AntiAfk.SpinMode.Server) {
             originalYaw = player.getYRot();
