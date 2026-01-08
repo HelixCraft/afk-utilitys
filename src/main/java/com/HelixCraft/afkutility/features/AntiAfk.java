@@ -54,7 +54,11 @@ public class AntiAfk {
         // Swing (Attack/Interact)
         if (config.swing) {
             if (swingTimer-- <= 0) {
-                ((com.HelixCraft.afkutility.mixin.MinecraftAccessor) client).callStartAttack();
+                if (config.swingMode == ModConfig.AntiAfk.SwingMode.Attack) {
+                    ((com.HelixCraft.afkutility.mixin.MinecraftAccessor) client).callStartAttack();
+                } else {
+                    ((com.HelixCraft.afkutility.mixin.MinecraftAccessor) client).callStartUseItem();
+                }
                 resetSwingTimer(config);
             }
         }

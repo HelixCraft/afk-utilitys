@@ -28,6 +28,7 @@ public class ModConfig {
         public boolean sneak = false;
         public boolean strafe = false;
         public boolean spin = false; // New Spin Action
+        public SwingMode swingMode = SwingMode.Attack;
 
         // Intervals (Seconds)
         public int jumpInterval = 5;
@@ -48,6 +49,11 @@ public class ModConfig {
         public enum SpinMode {
             Client,
             Server
+        }
+
+        public enum SwingMode {
+            Attack,
+            Use
         }
     }
 
