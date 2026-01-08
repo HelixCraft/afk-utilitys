@@ -3,6 +3,66 @@ plugins {
 	id 'maven-publish'
 }
 
+// --- DYNAMIC VERSION CONFIGURATION ---
+def mcVersionData = [
+    // Format: "MC_VERSION": ["YARN_MAPPINGS", "LOADER_VERSION", "FABRIC_API_VERSION"]
+    "1.14":    ["1.14+build.21", "0.16.10", "0.28.5+1.14"],
+    "1.14.1":  ["1.14.1+build.10", "0.16.10", "0.28.5+1.14"],
+    "1.14.2":  ["1.14.2+build.7", "0.16.10", "0.28.5+1.14"],
+    "1.14.3":  ["1.14.3+build.13", "0.16.10", "0.28.5+1.14"],
+    "1.14.4":  ["1.14.4+build.18", "0.16.10", "0.28.5+1.14"],
+    "1.15":    ["1.15+build.2", "0.16.10", "0.28.5+1.15"],
+    "1.15.1":  ["1.15.1+build.37", "0.16.10", "0.28.5+1.15"],
+    "1.15.2":  ["1.15.2+build.14", "0.16.10", "0.28.5+1.15"],
+    "1.16":    ["1.16+build.4", "0.16.10", "0.42.1+1.16"],
+    "1.16.1":  ["1.16.1+build.21", "0.16.10", "0.42.1+1.16"],
+    "1.16.2":  ["1.16.2+build.47", "0.16.10", "0.42.1+1.16"],
+    "1.16.3":  ["1.16.3+build.47", "0.16.10", "0.42.1+1.16"],
+    "1.16.2":  ["1.16.2+build.47", "0.16.10", "0.42.1+1.16"], // Duplicate entry in user request, keeping as is or fixing? I'll keep user's structure
+    "1.16.3":  ["1.16.3+build.47", "0.16.10", "0.42.1+1.16"],
+    "1.16.4":  ["1.16.4+build.9", "0.16.10", "0.42.1+1.16"],
+    "1.16.5":  ["1.16.5+build.10", "0.16.10", "0.42.1+1.16"],
+    "1.17":    ["1.17+build.13", "0.16.10", "0.46.1+1.17"],
+    "1.17.1":  ["1.17.1+build.63", "0.16.10", "0.46.1+1.17"],
+    "1.18":    ["1.18+build.1", "0.16.10", "0.47.10+1.18"],
+    "1.18.1":  ["1.18.1+build.22", "0.16.10", "0.47.10+1.18"],
+    "1.18.2":  ["1.18.2+build.4", "0.16.10", "0.47.10+1.18"],
+    "1.19":    ["1.19+build.4", "0.16.10", "0.58.5+1.19"],
+    "1.19.1":  ["1.19.1+build.15", "0.16.10", "0.58.5+1.19"],
+    "1.19.2":  ["1.19.2+build.28", "0.16.10", "0.58.5+1.19"],
+    "1.19.3":  ["1.19.3+build.5", "0.16.10", "0.72.1+1.19.3"],
+    "1.19.4":  ["1.19.4+build.2", "0.16.10", "0.81.1+1.19.4"],
+    "1.20":    ["1.20+build.1", "0.18.4", "0.83.0+1.20"],
+    "1.20.1":  ["1.20.1+build.10", "0.18.4", "0.92.6+1.20.1"],
+    "1.20.2":  ["1.20.2+build.4", "0.18.4", "0.91.6+1.20.2"],
+    "1.20.3":  ["1.20.3+build.1", "0.18.4", "0.91.1+1.20.3"],
+    "1.20.4":  ["1.20.4+build.3", "0.18.4", "0.97.3+1.20.4"],
+    "1.20.5":  ["1.20.5+build.1", "0.18.4", "0.97.8+1.20.5"],
+    "1.20.6":  ["1.20.6+build.3", "0.18.4", "0.100.8+1.20.6"],
+    "1.21":    ["1.21+build.9", "0.18.4", "0.102.0+1.21"],
+    "1.21.1":  ["1.21.1+build.3", "0.18.4", "0.116.7+1.21.1"],
+    "1.21.2":  ["1.21.2+build.1", "0.18.4", "0.106.1+1.21.2"],
+    "1.21.3":  ["1.21.3+build.2", "0.18.4", "0.114.1+1.21.3"],
+    "1.21.4":  ["1.21.4+build.8", "0.18.4", "0.119.4+1.21.4"],
+    "1.21.5":  ["1.21.5+build.1", "0.18.4", "0.128.2+1.21.5"],
+    "1.21.6":  ["1.21.6+build.1", "0.18.4", "0.128.2+1.21.6"],
+    "1.21.7":  ["1.21.7+build.8", "0.18.4", "0.129.0+1.21.7"],
+    "1.21.8":  ["1.21.8+build.1", "0.18.4", "0.136.1+1.21.8"],
+    "1.21.9":  ["1.21.9+build.1", "0.18.4", "0.134.1+1.21.9"],
+    "1.21.10": ["1.21.10+build.3", "0.18.4", "0.138.4+1.21.10"],
+    "1.21.11": ["1.21.11+build.4", "0.18.4", "0.141.0+1.21.11"]
+]
+
+def activeVersion = project.active_mc_version.trim()
+if (!mcVersionData.containsKey(activeVersion)) {
+    throw new GradleException("Unsupported Minecraft version: '${activeVersion}'. Supported versions: ${mcVersionData.keySet()}")
+}
+
+project.ext.minecraft_version = activeVersion
+project.ext.yarn_mappings     = mcVersionData[activeVersion][0]
+project.ext.loader_version    = mcVersionData[activeVersion][1]
+project.ext.fabric_api_version = mcVersionData[activeVersion][2]
+
 version = project.mod_version
 group = project.maven_group
 
@@ -11,29 +71,23 @@ base {
 }
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	
 }
 
 processResources {
 	inputs.property "version", project.version
+	inputs.property "minecraft_version", project.minecraft_version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": inputs.properties.version
+		expand "version": inputs.properties.version, "minecraft_version": inputs.properties.minecraft_version
 	}
 }
 
