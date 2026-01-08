@@ -5,7 +5,8 @@
 	"mixins": [
 		"ClientPlayerEntityMixin",
 		"ConnectScreenMixin",
-		"DisconnectedScreenMixin"
+		"DisconnectedScreenMixin",
+		"MinecraftAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

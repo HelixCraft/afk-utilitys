@@ -10,7 +10,7 @@ An advanced utility mod for Minecraft Fabric 1.21.4 designed to manage AFK (Away
 The Anti-AFK system prevents server isolation or kicks by simulating organic player activity.
 
 *   **Auto-Jump**: Periodically forces the player to jump. This is randomized slightly to appear more natural to anti-cheat systems.
-*   **Auto-Swing**: Periodically swings the player's main hand. Useful for keeping the player active without interacting with blocks.
+*   **Auto-Swing**: Periodically triggers a left-click (attack) action. Useful for automated farming or maintaining activity that requires block/entity interaction.
 *   **Auto-Sneak**: Alternates between sneaking and standing. You can configure the **Sneak Time** (how long you stay crouched) and the interval between sneaks.
 *   **Strafe Mode**: Moves the player left and right automatically to prevent coordinate-based AFK detection.
 *   **Spin Mode (Two Types)**:

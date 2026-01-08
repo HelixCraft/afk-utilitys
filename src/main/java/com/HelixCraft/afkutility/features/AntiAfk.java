@@ -3,7 +3,6 @@ package com.HelixCraft.afkutility.features;
 import com.HelixCraft.afkutility.config.ConfigManager;
 import com.HelixCraft.afkutility.config.ModConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.InteractionHand;
 
 import java.util.Random;
 
@@ -52,10 +51,10 @@ public class AntiAfk {
             }
         }
 
-        // Swing
+        // Swing (Attack/Interact)
         if (config.swing) {
             if (swingTimer-- <= 0) {
-                client.player.swing(InteractionHand.MAIN_HAND);
+                ((com.HelixCraft.afkutility.mixin.MinecraftAccessor) client).callStartAttack();
                 resetSwingTimer(config);
             }
         }
