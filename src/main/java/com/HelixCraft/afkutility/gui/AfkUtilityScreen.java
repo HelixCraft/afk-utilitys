@@ -21,6 +21,8 @@ public class AfkUtilityScreen extends Screen {
         private final ModConfig.AutoLog autoLogConfig = ConfigManager.get().autoLog;
 
         private EditBox customMessageBox;
+        private EditBox addItemBox;
+        private BlacklistList blacklistList;
 
         public AfkUtilityScreen(Screen parent) {
                 super(Component.literal("AFK Utility Config"));
@@ -29,8 +31,8 @@ public class AfkUtilityScreen extends Screen {
 
         @Override
         protected void init() {
-                // Updated Sidebar Width: "A bit wider" -> 100 to 120 or 130
-                int sidebarWidth = 130;
+                // Updated Sidebar Width: "A bit wider" -> 142
+                int sidebarWidth = 142;
 
                 // Tab Buttons (Sidebar)
                 int tabY = 40;
@@ -38,38 +40,55 @@ public class AfkUtilityScreen extends Screen {
                 int btnGap = 5;
                 int btnWidth = sidebarWidth - 20; // Padding
 
+                int contentX = sidebarWidth + 20;
+
+                // Tab Buttons + Quick Toggles
                 this.addRenderableWidget(
                                 Button.builder(Component.literal("Anti-AFK"), button -> switchTab(Tab.ANTI_AFK))
                                                 .bounds(10, tabY, btnWidth, btnHeight)
                                                 .build());
                 tabY += btnHeight + btnGap;
 
+                // Auto-Eat
                 this.addRenderableWidget(
                                 Button.builder(Component.literal("Auto-Eat"), button -> switchTab(Tab.AUTO_EAT))
-                                                .bounds(10, tabY, btnWidth, btnHeight)
+                                                .bounds(10, tabY, btnWidth - 38, btnHeight)
                                                 .build());
+                this.addRenderableWidget(CycleButton.onOffBuilder(autoEatConfig.enabled)
+                                .displayOnlyValue()
+                                .create(10 + btnWidth - 33, tabY, 33, 20, Component.empty(),
+                                                (button, value) -> autoEatConfig.enabled = value));
                 tabY += btnHeight + btnGap;
 
+                // Auto Reconnect
                 this.addRenderableWidget(
                                 Button.builder(Component.literal("Auto Reconnect"),
                                                 button -> switchTab(Tab.AUTO_RECONNECT))
-                                                .bounds(10, tabY, btnWidth, btnHeight)
+                                                .bounds(10, tabY, btnWidth - 38, btnHeight)
                                                 .build());
+                this.addRenderableWidget(CycleButton.onOffBuilder(autoReconnectConfig.enabled)
+                                .displayOnlyValue()
+                                .create(10 + btnWidth - 33, tabY, 33, 20, Component.empty(),
+                                                (button, value) -> autoReconnectConfig.enabled = value));
                 tabY += btnHeight + btnGap;
 
+                // Auto Log
                 this.addRenderableWidget(
                                 Button.builder(Component.literal("Auto Log"), button -> switchTab(Tab.AUTO_LOG))
-                                                .bounds(10, tabY, btnWidth, btnHeight)
+                                                .bounds(10, tabY, btnWidth - 38, btnHeight)
                                                 .build());
+                this.addRenderableWidget(CycleButton.onOffBuilder(autoLogConfig.enabled)
+                                .displayOnlyValue()
+                                .create(10 + btnWidth - 33, tabY, 33, 20, Component.empty(),
+                                                (button, value) -> autoLogConfig.enabled = value));
 
                 // Content Area init
-                int contentX = sidebarWidth + 20;
                 switch (currentTab) {
                         case ANTI_AFK:
                                 initAntiAfk(contentX);
                                 break;
                         case AUTO_EAT:
-                                initAutoEat(contentX);
+                                initAutoEat(contentX, sidebarWidth);
                                 break;
                         case AUTO_RECONNECT:
                                 initAutoReconnect(contentX);
@@ -170,18 +189,39 @@ public class AfkUtilityScreen extends Screen {
                 y += 24;
         }
 
-        private void initAutoEat(int xBase) {
-                int y = 50;
-                int width = 200;
+        private void initAutoEat(int xBase, int sidebarWidth) {
+                int y = 40;
 
-                this.addRenderableWidget(
-                                Button.builder(Component.literal("Open Blacklist File (Coming Soon)"), button -> {
-                                })
-                                                .bounds(xBase, y, width, 20)
-                                                .tooltip(net.minecraft.client.gui.components.Tooltip
-                                                                .create(Component.literal(
-                                                                                "Edit blacklist in config file manually for now")))
-                                                .build());
+                // Add small label
+                // No need to add as widget, we'll draw it in render() or just add a static text
+                // button/component if possible
+                // Better to just draw it in render() for simplicity in this Minecraft version
+
+                addItemBox = new EditBox(this.font, xBase, y, 150, 20, Component.literal("Item ID"));
+                addItemBox.setHint(Component.literal("minecraft:apple"));
+                this.addRenderableWidget(addItemBox);
+
+                this.addRenderableWidget(Button.builder(Component.literal("Add"), button -> {
+                        String item = addItemBox.getValue().trim();
+                        if (!item.isEmpty() && !autoEatConfig.blacklist.contains(item)) {
+                                autoEatConfig.blacklist.add(item);
+                                addItemBox.setValue("");
+                                this.clearWidgets();
+                                this.init();
+                        }
+                }).bounds(xBase + 155, y, 40, 20).build());
+
+                this.addRenderableWidget(Button.builder(Component.literal("Browse..."), button -> {
+                        this.minecraft.setScreen(new FoodSelectorScreen(this));
+                }).bounds(xBase + 200, y, 60, 20).build());
+
+                y += 45; // Leave room for label
+
+                blacklistList = new BlacklistList(this.minecraft, (this.width - sidebarWidth - 40) / 2,
+                                this.height - 100, y,
+                                20);
+                blacklistList.setX(xBase);
+                this.addRenderableWidget(blacklistList);
         }
 
         private void initAutoReconnect(int xBase) {
@@ -243,7 +283,7 @@ public class AfkUtilityScreen extends Screen {
         @Override
         public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
                 this.renderBackground(context, mouseX, mouseY, delta);
-                int sbWidth = 130; // Match sidebarWidth
+                int sbWidth = 142; // Match sidebarWidth
 
                 // Sidebar Background
                 context.fill(0, 0, sbWidth, height, 0x80000000);
@@ -255,8 +295,7 @@ public class AfkUtilityScreen extends Screen {
                 context.drawCenteredString(this.font, this.title, sbWidth + (width - sbWidth) / 2, 10, 0xFFFFFF);
 
                 if (currentTab == Tab.AUTO_EAT) {
-                        context.drawCenteredString(this.font, "Auto-Eat Active: Missing Hunger >= Food Value",
-                                        sbWidth + (width - sbWidth) / 2, 80, 0xAAAAAA);
+                        context.drawString(this.font, "Item Blacklist:", sbWidth + 20, 70, 0xFFFFFF);
                 }
         }
 
@@ -334,6 +373,61 @@ public class AfkUtilityScreen extends Screen {
                         float val = (float) (min + (max - min) * this.value);
                         val = Math.round(val * 10) / 10.0f;
                         onChange.accept(val);
+                }
+        }
+
+        private class BlacklistList
+                        extends net.minecraft.client.gui.components.ObjectSelectionList<BlacklistList.Entry> {
+                public BlacklistList(net.minecraft.client.Minecraft minecraft, int width, int height, int y,
+                                int itemHeight) {
+                        super(minecraft, width, height, y, itemHeight);
+                        for (String item : autoEatConfig.blacklist) {
+                                this.addEntry(new Entry(item));
+                        }
+                }
+
+                @Override
+                public int getRowWidth() {
+                        return this.width - 20;
+                }
+
+                protected int getScrollbarPosition() {
+                        return this.getX() + getRowWidth() + 10;
+                }
+
+                private class Entry extends net.minecraft.client.gui.components.ObjectSelectionList.Entry<Entry> {
+                        private final String itemName;
+                        private final Button removeButton;
+
+                        public Entry(String itemName) {
+                                this.itemName = itemName;
+                                this.removeButton = Button.builder(Component.literal("X"), button -> {
+                                        autoEatConfig.blacklist.remove(itemName);
+                                        AfkUtilityScreen.this.clearWidgets();
+                                        AfkUtilityScreen.this.init();
+                                }).bounds(0, 0, 20, 20).build();
+                        }
+
+                        @Override
+                        public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth,
+                                        int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+                                graphics.drawString(AfkUtilityScreen.this.font, itemName, x + 5, y + 5, 0xFFFFFF);
+                                removeButton.setX(x + entryWidth - 25);
+                                removeButton.setY(y);
+                                removeButton.render(graphics, mouseX, mouseY, tickDelta);
+                        }
+
+                        @Override
+                        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+                                if (removeButton.mouseClicked(mouseX, mouseY, button))
+                                        return true;
+                                return super.mouseClicked(mouseX, mouseY, button);
+                        }
+
+                        @Override
+                        public Component getNarration() {
+                                return Component.literal(itemName);
+                        }
                 }
         }
 }

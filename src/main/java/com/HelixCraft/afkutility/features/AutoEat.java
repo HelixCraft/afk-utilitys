@@ -21,6 +21,12 @@ public class AutoEat {
 
         ModConfig.AutoEat config = ConfigManager.get().autoEat;
 
+        if (!config.enabled) {
+            if (eating)
+                stopEating(client);
+            return;
+        }
+
         if (eating) {
             // Stop eating if we shouldn't eat anymore
             if (!shouldEat(client, config)) {

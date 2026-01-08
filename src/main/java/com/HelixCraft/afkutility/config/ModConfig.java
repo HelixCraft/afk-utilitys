@@ -43,7 +43,7 @@ public class ModConfig {
         public boolean sendMessages = false;
         public double messageInterval = 1.0; // Minutes (0.1 - 30.0)
         public boolean randomMessage = true;
-        public String customMessage = "I am currently AFK!";
+        public String customMessage = "I am not AFK!";
         public List<String> messages = new ArrayList<>(List.of(
                 "I'm AFK, back soon!",
                 "AFK Utility Mod enabled.",
@@ -56,9 +56,7 @@ public class ModConfig {
     }
 
     public static class AutoEat {
-        // Simple global toggle in tab, but we can store per-food logic if needed later
-        // For now, enabled is handled by the feature logic checking (missingHunger >=
-        // foodValue)
+        public boolean enabled = true;
         public List<String> blacklist = new ArrayList<>(List.of(
                 "minecraft:rotten_flesh",
                 "minecraft:spider_eye"));

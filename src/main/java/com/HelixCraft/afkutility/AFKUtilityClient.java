@@ -22,7 +22,7 @@ public class AFKUtilityClient implements ClientModInitializer {
         openConfigKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.afkutility.open_config",
                 InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_R,
+                GLFW.GLFW_KEY_K,
                 "category.afkutility.general"));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
