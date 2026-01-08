@@ -31,8 +31,8 @@ public class AfkUtilityScreen extends Screen {
 
         @Override
         protected void init() {
-                // Updated Sidebar Width: "A bit wider" -> 147
-                int sidebarWidth = 147;
+                // Updated Sidebar Width: "A bit wider" -> 152
+                int sidebarWidth = 152;
 
                 // Tab Buttons (Sidebar)
                 int tabY = 40;
@@ -286,7 +286,7 @@ public class AfkUtilityScreen extends Screen {
 
         public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
                 this.renderBackground(context, mouseX, mouseY, delta);
-                int sbWidth = 147; // Match sidebarWidth
+                int sbWidth = 152; // Match sidebarWidth
 
                 // Sidebar Background
                 context.fill(0, 0, sbWidth, height, 0x80000000);
