@@ -16,7 +16,6 @@ public class AntiAfk {
     private static int sneakIntervalTimer = 0;
 
     private static int messageTimer = 0;
-    private static int messageI = 0;
     private static int sneakTimeTimer = 0; // Duration of sneak
     private static int strafeTimer = 0;
     private static boolean direction = false;
@@ -126,18 +125,6 @@ public class AntiAfk {
         if (config.sendMessages) {
             if (messageTimer-- <= 0) {
                 String msg = config.customMessage;
-
-                if (config.randomMessage || msg.isEmpty()) {
-                    if (!config.messages.isEmpty()) {
-                        if (config.randomMessage) {
-                            messageI = random.nextInt(config.messages.size());
-                        } else {
-                            if (++messageI >= config.messages.size())
-                                messageI = 0;
-                        }
-                        msg = config.messages.get(messageI);
-                    }
-                }
 
                 if (!msg.isEmpty() && client.getConnection() != null) {
                     client.getConnection().sendChat(msg);

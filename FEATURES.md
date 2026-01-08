@@ -18,7 +18,7 @@ The Anti-AFK system prevents server isolation or kicks by simulating organic pla
     *   **Server Mode**: Sends rotation packets to the server while keeping your local camera completely static. Other players see you spinning, but your screen remains steady.
 *   **Chat Messages**: Sends periodic messages to the chat.
     *   **Interval Slider**: Range from 0.1 minutes (6 seconds) to 30 minutes.
-    *   **Custom/Random**: Send a specific "I am not AFK" message or cycle through a randomized list.
+    *   **Custom**: Send a specific "I am not AFK" message.
 
 ---
 

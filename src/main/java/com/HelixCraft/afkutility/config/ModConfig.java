@@ -43,12 +43,7 @@ public class ModConfig {
         // Messages
         public boolean sendMessages = false;
         public double messageInterval = 1.0; // Minutes (0.1 - 30.0)
-        public boolean randomMessage = true;
         public String customMessage = "I am not AFK!";
-        public List<String> messages = new ArrayList<>(List.of(
-                "I'm AFK, back soon!",
-                "AFK Utility Mod enabled.",
-                "Don't kill me, I'm just AFK."));
 
         public enum SpinMode {
             Client,

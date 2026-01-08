@@ -2,7 +2,7 @@
 
 ![Environment](https://img.shields.io/badge/Environment-Client-purple)
 [![Java 21](https://img.shields.io/badge/Language-Java%2021-orange)](https://www.oracle.com/java/technologies/downloads/#java21)
-[![Modrinth](https://img.shields.io/badge/Modrinth-AFK--Utility-00AF5C?logo=modrinth)](https://modrinth.com/mod/afk-utility)
+[![Modrinth](https://img.shields.io/badge/Modrinth-AFK--Utility-00AF5C?logo=modrinth)](https://modrinth.com/mod/afk-utilitys)
 
 <p align="left">
   <a href="https://modrinth.com/mod/afk-utilitys">
@@ -39,10 +39,9 @@ Simulates natural player activity to prevent server kicks:
 - **Spin Mode**:
   - **Client Mode**: Rotates your camera view visually
   - **Server Mode**: Sends rotation packets while keeping your screen static
-- **Chat Messages**: Send periodic messages with custom or random text
+- **Chat Messages**: Send periodic messages with custom text
   - Interval range: 0.1 to 30 minutes
   - Custom message support
-  - Random message rotation
 
 ### Auto Reconnect
 
@@ -117,8 +116,7 @@ Example configuration:
     "spinMode": "OFF",
     "chatMessages": false,
     "messageInterval": 5.0,
-    "customMessage": "I am not AFK",
-    "useRandomMessages": false
+    "customMessage": "I am not AFK"
   },
   "autoReconnect": {
     "enabled": true,
