@@ -23,7 +23,7 @@ An advanced utility mod for Minecraft Fabric that manages AFK (Away From Keyboar
 - **Farm Automation**: Maintain activity for passive mob farms and auto-clickers
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/3287bc09-262a-4876-9359-dbf02c989ab2" width="700" />
+  <img src="https://github.com/user-attachments/assets/02730b70-11d9-47bf-9b59-a8cf227b1755" width="1000" />
 </div>
 
 ## Features
