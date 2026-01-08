@@ -394,10 +394,6 @@ public class AfkUtilityScreen extends Screen {
                         return this.width - 20;
                 }
 
-                protected int getScrollbarPosition() {
-                        return this.getX() + getRowWidth() + 10;
-                }
-
                 private class Entry extends net.minecraft.client.gui.components.ObjectSelectionList.Entry<Entry> {
                         private final String itemName;
                         private final Button removeButton;
