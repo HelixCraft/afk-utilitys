@@ -118,7 +118,8 @@ public class AntiAfk {
                     client.getConnection().send(new net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.Rot(
                             lastYaw,
                             (float) config.pitch,
-                            client.player.onGround()));
+                            client.player.onGround(),
+                            client.player.horizontalCollision));
                 }
             }
         } else {

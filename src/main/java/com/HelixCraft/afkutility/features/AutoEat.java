@@ -9,6 +9,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import com.HelixCraft.afkutility.mixin.InventoryAccessor;
 
 public class AutoEat {
     private static boolean eating = false;
@@ -35,7 +36,9 @@ public class AutoEat {
             }
 
             // Check if current item is still food
-            ItemStack currentStack = client.player.getInventory().items.get(slot != -1 && slot != 40 ? slot : 0);
+            // Replaced direct field access to client.player.getInventory().items with
+            // getItem() accessor
+            ItemStack currentStack = client.player.getInventory().getItem(slot != -1 && slot != 40 ? slot : 0);
             if (!currentStack.has(DataComponents.FOOD) && slot != 40) {
                 stopEating(client);
                 return;
@@ -66,7 +69,7 @@ public class AutoEat {
     }
 
     private static void startEating(Minecraft client, ModConfig.AutoEat config) {
-        prevSlot = client.player.getInventory().selected;
+        prevSlot = ((InventoryAccessor) client.player.getInventory()).getSelected();
         changeSlot(client, slot);
         client.options.keyUse.setDown(true);
         if (client.gameMode != null) {
@@ -77,7 +80,7 @@ public class AutoEat {
 
     private static void stopEating(Minecraft client) {
         if (prevSlot != -1 && slot != 40) {
-            client.player.getInventory().selected = prevSlot;
+            ((InventoryAccessor) client.player.getInventory()).setSelected(prevSlot);
         }
         client.options.keyUse.setDown(false);
         eating = false;
@@ -88,7 +91,7 @@ public class AutoEat {
     private static void changeSlot(Minecraft client, int newSlot) {
         if (newSlot == 40)
             return;
-        client.player.getInventory().selected = newSlot;
+        ((InventoryAccessor) client.player.getInventory()).setSelected(newSlot);
         slot = newSlot;
     }
 
