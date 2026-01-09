@@ -1,0 +1,6 @@
+
+task printCp {
+    doLast {
+        configurations.compileClasspath.files.each { println it }
+    }
+}
