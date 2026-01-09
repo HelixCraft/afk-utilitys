@@ -381,14 +381,14 @@ public class AfkUtilityScreen extends Screen {
                         extends net.minecraft.client.gui.components.ObjectSelectionList<BlacklistList.Entry> {
                 public BlacklistList(net.minecraft.client.Minecraft minecraft, int width, int height, int y,
                                 int itemHeight) {
-                        super(minecraft, width, height, y, y + height, itemHeight);
+                        super(minecraft, width, height, y, itemHeight);
                         for (String item : autoEatConfig.blacklist) {
                                 this.addEntry(new Entry(item));
                         }
                 }
 
                 public void setX(int x) {
-                        this.setLeftPos(x);
+                        // setLeftPos removed/changed in 1.20.3. Leaving empty or TODO.
                 }
 
                 @Override

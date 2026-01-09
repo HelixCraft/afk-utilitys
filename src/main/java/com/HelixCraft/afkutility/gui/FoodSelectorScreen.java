@@ -59,9 +59,7 @@ public class FoodSelectorScreen extends Screen {
 
     private class FoodList extends net.minecraft.client.gui.components.ObjectSelectionList<FoodList.Entry> {
         public FoodList(net.minecraft.client.Minecraft minecraft, int width, int height, int y, int itemHeight) {
-            // 1.20 ObjectSelectionList ctor: (client, width, height, top, bottom,
-            // itemHeight)
-            super(minecraft, width, height, y, y + height, itemHeight);
+            super(minecraft, width, height, y, itemHeight);
         }
 
         public void refreshEntries(String filter) {
