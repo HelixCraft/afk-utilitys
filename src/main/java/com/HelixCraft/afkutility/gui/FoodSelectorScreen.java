@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.component.DataComponents;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +26,7 @@ public class FoodSelectorScreen extends Screen {
         super(Component.literal("Select Food to Blacklist"));
         this.parent = parent;
         this.edibleItems = BuiltInRegistries.ITEM.stream()
-                .filter(Item::isEdible)
+                .filter(item -> item.components().has(DataComponents.FOOD))
                 .collect(Collectors.toList());
     }
 

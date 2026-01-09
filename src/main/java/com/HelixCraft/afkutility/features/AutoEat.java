@@ -5,6 +5,7 @@ import com.HelixCraft.afkutility.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +36,7 @@ public class AutoEat {
 
             // Check if current item is still food
             ItemStack currentStack = client.player.getInventory().items.get(slot != -1 && slot != 40 ? slot : 0);
-            if (currentStack.getItem().getFoodProperties() == null && slot != 40) {
+            if (!currentStack.has(DataComponents.FOOD) && slot != 40) {
                 stopEating(client);
                 return;
             }
@@ -100,13 +101,13 @@ public class AutoEat {
         for (int i = 0; i < 9; i++) {
             ItemStack stack = client.player.getInventory().getItem(i);
             Item item = stack.getItem();
-            FoodProperties food = item.getFoodProperties();
+            FoodProperties food = stack.get(DataComponents.FOOD);
 
             if (food != null) {
                 if (isBlacklisted(item, config))
                     continue;
 
-                int hunger = food.getNutrition();
+                int hunger = food.nutrition();
                 // Strict check: Only eat if missing hunger is exactly or more than the food
                 // provides
                 // "es ist erst dan, wenn genau so viel hunger nicht da ist, wie das jeweilge
@@ -122,11 +123,11 @@ public class AutoEat {
 
         ItemStack offhandStack = client.player.getOffhandItem();
         Item offhandItem = offhandStack.getItem();
-        FoodProperties offhandFood = offhandItem.getFoodProperties();
+        FoodProperties offhandFood = offhandStack.get(DataComponents.FOOD);
 
         if (offhandFood != null) {
             if (!isBlacklisted(offhandItem, config)) {
-                int hunger = offhandFood.getNutrition();
+                int hunger = offhandFood.nutrition();
                 if (missingHunger >= hunger) {
                     if (hunger > bestHunger) {
                         return 40;
