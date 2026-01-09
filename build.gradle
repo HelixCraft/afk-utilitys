@@ -67,7 +67,13 @@ version = project.mod_version
 group = project.maven_group
 
 base {
-	archivesName = project.archives_base_name
+	// Format: <ModName>-<ModVersion>-mc<MCVersion(s)>.jar
+	archivesName = "${project.archives_base_name}-${project.mod_version}-mc${version_span}"
+}
+
+// Ensure the version isn't appended twice
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveVersion.set("")
 }
 
 repositories {
@@ -83,11 +89,14 @@ dependencies {
 }
 
 processResources {
+	def versionParts = project.version_span.split("-")
+	def mcDependencyRange = versionParts.size() > 1 ? ">=${versionParts[0]} <=${versionParts[1]}" : versionParts[0]
+
 	inputs.property "version", project.version
-	inputs.property "minecraft_version", project.minecraft_version
+	inputs.property "minecraft_dependency", mcDependencyRange
 
 	filesMatching("fabric.mod.json") {
-		expand "version": inputs.properties.version, "minecraft_version": inputs.properties.minecraft_version
+		expand "version": inputs.properties.version, "minecraft_dependency": inputs.properties.minecraft_dependency
 	}
 }
 
