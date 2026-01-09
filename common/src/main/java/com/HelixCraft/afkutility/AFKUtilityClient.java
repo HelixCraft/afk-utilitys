@@ -17,6 +17,7 @@ public class AFKUtilityClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        AFKUtility.LOGGER.info("Initializing AFKUtility client...");
         ConfigManager.load();
 
         openConfigKey = new KeyMapping(
@@ -24,11 +25,14 @@ public class AFKUtilityClient implements ClientModInitializer {
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_K,
                 "category.afkutility.general");
-        KeyMappingRegistry.register(openConfigKey);
 
-        ClientTickEvent.CLIENT_POST.register(client -> {
-            if (openConfigKey.consumeClick()) { // wasPressed -> consumeClick
-                client.setScreen(new AfkUtilityScreen(client.screen)); // currentScreen -> screen
+        KeyMappingRegistry.register(openConfigKey);
+        AFKUtility.LOGGER.info("Keybinding Registered: K");
+
+        ClientTickEvent.CLIENT_PRE.register(client -> {
+            if (openConfigKey.consumeClick()) {
+                AFKUtility.LOGGER.info("Config key pressed! Opening screen.");
+                client.setScreen(new AfkUtilityScreen(client.screen));
             }
 
             AntiAfk.tick(client);

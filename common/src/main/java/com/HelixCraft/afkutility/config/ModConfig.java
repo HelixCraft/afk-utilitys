@@ -21,7 +21,7 @@ public class ModConfig {
     public AutoLog autoLog = new AutoLog();
 
     public static class AntiAfk {
-        public boolean enabled = true;
+        public boolean enabled = false;
         // Actions
         public boolean jump = false;
         public boolean swing = false;
@@ -52,10 +52,19 @@ public class ModConfig {
     }
 
     public static class AutoEat {
-        public boolean enabled = true;
+        public boolean enabled = false;
         public List<String> blacklist = new ArrayList<>(List.of(
-                "minecraft:rotten_flesh",
-                "minecraft:spider_eye"));
+                "minecraft:pufferfish", // Gift, Übelkeit und Hunger-Effekt
+                "minecraft:rotten_flesh", // 80% Chance auf Hunger-Effekt
+                "minecraft:spider_eye", // Verursacht Gift-Schaden
+                "minecraft:poisonous_potato", // Verursacht Gift-Schaden
+                "minecraft:raw_chicken", // 30% Chance auf Hunger-Effekt
+                "minecraft:enchanted_golden_apple", // Zu wertvoll (für Kämpfe aufsparen)
+                "minecraft:golden_apple", // Zu wertvoll (Notfälle/Villager)
+                "minecraft:chorus_fruit", // Zufällige Teleportation
+                "minecraft:suspicious_stew", // Unberechenbare negative Effekte
+                "minecraft:honey_bottle" // Zur Gift-Heilung aufsparen
+        ));
     }
 
     public static class AutoReconnect {

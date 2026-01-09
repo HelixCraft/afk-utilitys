@@ -228,13 +228,8 @@ public class AfkUtilityScreen extends Screen {
         }
 
         private void initAutoReconnect(int xBase) {
-                int y = 50;
+                int y = 40;
                 int width = 200;
-
-                this.addRenderableWidget(CycleButton.onOffBuilder(autoReconnectConfig.enabled)
-                                .create(xBase, y, width, 20, Component.literal("Enabled"),
-                                                (button, value) -> autoReconnectConfig.enabled = value));
-                y += 24;
 
                 this.addRenderableWidget(
                                 new IntSlider(xBase, y, width, 20, "Delay: ", "s", 1, 60, autoReconnectConfig.delay,
@@ -242,13 +237,8 @@ public class AfkUtilityScreen extends Screen {
         }
 
         private void initAutoLog(int xBase) {
-                int y = 50;
+                int y = 40;
                 int width = 200;
-
-                this.addRenderableWidget(CycleButton.onOffBuilder(autoLogConfig.enabled)
-                                .create(xBase, y, width, 20, Component.literal("Enabled"),
-                                                (button, value) -> autoLogConfig.enabled = value));
-                y += 24;
 
                 this.addRenderableWidget(new IntSlider(xBase, y, width, 20, "Health < ", "", 0, 20,
                                 autoLogConfig.healthThreshold, val -> autoLogConfig.healthThreshold = val));
