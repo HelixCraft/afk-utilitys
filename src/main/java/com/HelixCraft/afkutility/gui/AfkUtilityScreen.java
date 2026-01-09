@@ -10,6 +10,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+import net.minecraft.client.input.MouseButtonEvent;
+
 import java.util.function.Consumer;
 
 public class AfkUtilityScreen extends Screen {
@@ -410,19 +412,19 @@ public class AfkUtilityScreen extends Screen {
                         }
 
                         @Override
-                        public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth,
-                                        int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+                        public void renderContent(GuiGraphics graphics, int x, int y, boolean hovered,
+                                        float tickDelta) {
                                 graphics.drawString(AfkUtilityScreen.this.font, itemName, x + 5, y + 5, 0xFFFFFF);
-                                removeButton.setX(x + entryWidth - 25);
+                                removeButton.setX(x + BlacklistList.this.getRowWidth() - 25);
                                 removeButton.setY(y);
-                                removeButton.render(graphics, mouseX, mouseY, tickDelta);
+                                removeButton.render(graphics, 0, 0, tickDelta);
                         }
 
                         @Override
-                        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                                if (removeButton.mouseClicked(mouseX, mouseY, button))
+                        public boolean mouseClicked(MouseButtonEvent event, boolean handled) {
+                                if (removeButton.mouseClicked(event, handled))
                                         return true;
-                                return super.mouseClicked(mouseX, mouseY, button);
+                                return super.mouseClicked(event, handled);
                         }
 
                         @Override

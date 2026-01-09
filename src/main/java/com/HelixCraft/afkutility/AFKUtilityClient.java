@@ -6,11 +6,14 @@ import com.HelixCraft.afkutility.features.AutoEat;
 import com.HelixCraft.afkutility.features.AutoLog;
 import com.HelixCraft.afkutility.gui.AfkUtilityScreen;
 import net.fabricmc.api.ClientModInitializer;
+import org.lwjgl.glfw.GLFW;
+import net.minecraft.resources.ResourceLocation;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.resources.ResourceLocation;
+// import com.mojang.blaze3d.platform.InputConstants; // Already imported
 
 public class AFKUtilityClient implements ClientModInitializer {
     private static KeyMapping openConfigKey;
@@ -23,7 +26,7 @@ public class AFKUtilityClient implements ClientModInitializer {
                 "key.afkutility.open_config",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_K,
-                "category.afkutility.general"));
+                new KeyMapping.Category(ResourceLocation.parse("afkutility:general"))));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (openConfigKey.consumeClick()) { // wasPressed -> consumeClick

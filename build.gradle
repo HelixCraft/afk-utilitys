@@ -130,3 +130,8 @@ publishing {
 		// retrieving dependencies.
 	}
 }
+task printCp {
+    doLast {
+        configurations.compileClasspath.files.each { println it }
+    }
+}
