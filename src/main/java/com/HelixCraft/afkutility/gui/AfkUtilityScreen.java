@@ -223,7 +223,6 @@ public class AfkUtilityScreen extends Screen {
                 blacklistList = new BlacklistList(this.minecraft, (this.width - sidebarWidth - 40) / 2,
                                 this.height - 100, y,
                                 20);
-                blacklistList.setX(xBase);
                 this.addRenderableWidget(blacklistList);
         }
 
@@ -284,7 +283,7 @@ public class AfkUtilityScreen extends Screen {
         }
 
         public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-                this.renderBackground(context, mouseX, mouseY, delta);
+                this.renderBackground(context);
                 int sbWidth = 152; // Match sidebarWidth
 
                 // Sidebar Background
@@ -382,10 +381,14 @@ public class AfkUtilityScreen extends Screen {
                         extends net.minecraft.client.gui.components.ObjectSelectionList<BlacklistList.Entry> {
                 public BlacklistList(net.minecraft.client.Minecraft minecraft, int width, int height, int y,
                                 int itemHeight) {
-                        super(minecraft, width, height, y, itemHeight);
+                        super(minecraft, width, height, y, y + height, itemHeight);
                         for (String item : autoEatConfig.blacklist) {
                                 this.addEntry(new Entry(item));
                         }
+                }
+
+                public void setX(int x) {
+                        this.setLeftPos(x);
                 }
 
                 @Override

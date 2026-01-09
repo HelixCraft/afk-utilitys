@@ -6,10 +6,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +25,7 @@ public class FoodSelectorScreen extends Screen {
         super(Component.literal("Select Food to Blacklist"));
         this.parent = parent;
         this.edibleItems = BuiltInRegistries.ITEM.stream()
-                .filter(item -> item.components().has(DataComponents.FOOD))
+                .filter(Item::isEdible)
                 .collect(Collectors.toList());
     }
 
@@ -52,14 +52,16 @@ public class FoodSelectorScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        this.renderBackground(graphics, mouseX, mouseY, delta);
+        this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, delta);
         graphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
     }
 
     private class FoodList extends net.minecraft.client.gui.components.ObjectSelectionList<FoodList.Entry> {
         public FoodList(net.minecraft.client.Minecraft minecraft, int width, int height, int y, int itemHeight) {
-            super(minecraft, width, height, y, itemHeight);
+            // 1.20 ObjectSelectionList ctor: (client, width, height, top, bottom,
+            // itemHeight)
+            super(minecraft, width, height, y, y + height, itemHeight);
         }
 
         public void refreshEntries(String filter) {
@@ -67,7 +69,7 @@ public class FoodSelectorScreen extends Screen {
             String lowerFilter = filter.toLowerCase();
             for (Item item : edibleItems) {
                 String id = BuiltInRegistries.ITEM.getKey(item).toString();
-                String name = item.getName().getString().toLowerCase();
+                String name = new ItemStack(item).getHoverName().getString().toLowerCase();
                 if (id.contains(lowerFilter) || name.contains(lowerFilter)) {
                     this.addEntry(new Entry(item));
                 }
@@ -80,7 +82,7 @@ public class FoodSelectorScreen extends Screen {
         }
 
         protected int getScrollbarPosition() {
-            return this.getX() + this.width / 2 + getRowWidth() / 2 + 10;
+            return this.width / 2 + getRowWidth() / 2 + 10;
         }
 
         private class Entry extends net.minecraft.client.gui.components.ObjectSelectionList.Entry<Entry> {
@@ -105,7 +107,8 @@ public class FoodSelectorScreen extends Screen {
             @Override
             public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth, int entryHeight,
                     int mouseX, int mouseY, boolean hovered, float tickDelta) {
-                graphics.drawString(FoodSelectorScreen.this.font, item.getName(), x + 5, y + 2, 0xFFFFFF);
+                graphics.drawString(FoodSelectorScreen.this.font, new ItemStack(item).getHoverName(), x + 5, y + 2,
+                        0xFFFFFF);
                 graphics.drawString(FoodSelectorScreen.this.font, itemId, x + 5, y + 12, 0x888888);
 
                 addButton.setX(x + entryWidth - 55);
@@ -122,7 +125,7 @@ public class FoodSelectorScreen extends Screen {
 
             @Override
             public Component getNarration() {
-                return item.getName();
+                return new ItemStack(item).getHoverName();
             }
         }
     }

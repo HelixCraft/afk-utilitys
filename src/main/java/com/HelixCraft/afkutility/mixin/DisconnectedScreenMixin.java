@@ -94,7 +94,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
             serverAddress = ServerAddress.parseString(serverData.ip);
 
         if (serverData != null) {
-            ConnectScreen.startConnecting(new TitleScreen(), this.minecraft, serverAddress, serverData, false, null);
+            ConnectScreen.startConnecting(new TitleScreen(), this.minecraft, serverAddress, serverData, false);
         }
     }
 }
