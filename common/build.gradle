@@ -1,13 +1,18 @@
+plugins {
+    id 'dev.architectury.loom'
+}
+
 architectury {
     common(project.enabled_platforms.split(","))
 }
 
 
 dependencies {
+
     // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin json properties.
     // Do NOT use other classes from fabric loader.
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
     
     // Architectury API
-    modImplementation "dev.architectury:architectury:${project.architectury_api_version}"
+    modImplementation "dev.architectury:architectury:${rootProject.architectury_api_version}"
 }
