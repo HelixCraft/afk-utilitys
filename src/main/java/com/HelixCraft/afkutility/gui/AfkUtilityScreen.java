@@ -283,7 +283,7 @@ public class AfkUtilityScreen extends Screen {
         }
 
         public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-                this.renderBackground(context);
+                this.renderBackground(context, mouseX, mouseY, delta);
                 int sbWidth = 152; // Match sidebarWidth
 
                 // Sidebar Background
