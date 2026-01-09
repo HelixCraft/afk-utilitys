@@ -6,8 +6,8 @@ import com.HelixCraft.afkutility.features.AutoEat;
 import com.HelixCraft.afkutility.features.AutoLog;
 import com.HelixCraft.afkutility.gui.AfkUtilityScreen;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
 import org.lwjgl.glfw.GLFW;
@@ -19,13 +19,14 @@ public class AFKUtilityClient implements ClientModInitializer {
     public void onInitializeClient() {
         ConfigManager.load();
 
-        openConfigKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        openConfigKey = new KeyMapping(
                 "key.afkutility.open_config",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_K,
-                "category.afkutility.general"));
+                "category.afkutility.general");
+        KeyMappingRegistry.register(openConfigKey);
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+        ClientTickEvent.CLIENT_POST.register(client -> {
             if (openConfigKey.consumeClick()) { // wasPressed -> consumeClick
                 client.setScreen(new AfkUtilityScreen(client.screen)); // currentScreen -> screen
             }
