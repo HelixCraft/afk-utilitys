@@ -24,6 +24,38 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive = false }
+
+    // Version Specific Implementation
+    def versionModule = ""
+    def mcVerStr = rootProject.minecraft_version
+    
+    def useNewModule = false
+    if (mcVerStr == "1.21") {
+        useNewModule = false
+    } else {
+        def parts = mcVerStr.split("\\.")
+        if (parts.length >= 3) {
+             try {
+                def patch = Integer.parseInt(parts[2])
+                // 1.21.11 introduced KeyMapping.Category(Identifier) and MouseButtonEvent
+                // Versions 1.21.5 - 1.21.9 still seem to use the 1.21.4-style API (based on build failures)
+                if (patch >= 9) { 
+                    useNewModule = true
+                }
+            } catch (NumberFormatException ignored) {}
+        }
+    }
+
+    if (useNewModule) {
+        versionModule = ":versions:v1_21_5"
+    } else {
+        versionModule = ":versions:v1_21_0"
+    }
+
+    println "Using Version Module: ${versionModule} for MC ${rootProject.minecraft_version}"
+
+    implementation project(path: versionModule, configuration: "namedElements")
+    include project(versionModule)
 }
 
 processResources {

@@ -15,3 +15,34 @@ rootProject.name = 'AFKUtilitys'
 
 include 'common'
 include 'fabric'
+
+def props = new Properties()
+try {
+    file("gradle.properties").withInputStream { props.load(it) }
+} catch (Exception e) {
+    // Fallback if file not found or readable
+}
+
+def activeVersion = props.getProperty("active_mc_version", "1.21.4")
+println "SETTINGS: Active MC Version: ${activeVersion}"
+def useNewModule = false
+
+if (activeVersion == "1.21") {
+    useNewModule = false
+} else {
+    def parts = activeVersion.split("\\.")
+    if (parts.length >= 3) {
+        try {
+            def patch = Integer.parseInt(parts[2])
+            if (patch >= 9) {
+                useNewModule = true
+            }
+        } catch (NumberFormatException ignored) {}
+    }
+}
+
+if (useNewModule) {
+    include 'versions:v1_21_5'
+} else {
+    include 'versions:v1_21_0'
+}

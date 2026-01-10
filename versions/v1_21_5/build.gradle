@@ -1,0 +1,29 @@
+plugins {
+    id 'dev.architectury.loom'
+}
+
+architectury {
+    platformSetupLoomIde()
+}
+
+
+configurations {
+    common
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    mappings loom.officialMojangMappings()
+
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
+    
+    // Depend on common to see the Interface
+    common(project(path: ":common", configuration: "namedElements")) { transitive = false }
+}
+
+base {
+    archivesName = "afkutility-compat-v1_21_5"
+}
+

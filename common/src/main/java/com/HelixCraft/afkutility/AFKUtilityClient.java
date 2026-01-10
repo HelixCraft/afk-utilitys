@@ -4,7 +4,7 @@ import com.HelixCraft.afkutility.config.ConfigManager;
 import com.HelixCraft.afkutility.features.AntiAfk;
 import com.HelixCraft.afkutility.features.AutoEat;
 import com.HelixCraft.afkutility.features.AutoLog;
-import com.HelixCraft.afkutility.gui.AfkUtilityScreen;
+import com.HelixCraft.afkutility.compat.VersionCompat;
 import net.fabricmc.api.ClientModInitializer;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
@@ -20,7 +20,7 @@ public class AFKUtilityClient implements ClientModInitializer {
         AFKUtility.LOGGER.info("Initializing AFKUtility client...");
         ConfigManager.load();
 
-        openConfigKey = new KeyMapping(
+        openConfigKey = VersionCompat.SCREEN_HELPER.createKeyMapping(
                 "key.afkutility.open_config",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_K,
@@ -32,7 +32,8 @@ public class AFKUtilityClient implements ClientModInitializer {
         ClientTickEvent.CLIENT_PRE.register(client -> {
             if (openConfigKey.consumeClick()) {
                 AFKUtility.LOGGER.info("Config key pressed! Opening screen.");
-                client.setScreen(new AfkUtilityScreen(client.screen));
+                client.setScreen(com.HelixCraft.afkutility.compat.VersionCompat.SCREEN_HELPER
+                        .createAfkUtilityScreen(client.screen));
             }
 
             AntiAfk.tick(client);

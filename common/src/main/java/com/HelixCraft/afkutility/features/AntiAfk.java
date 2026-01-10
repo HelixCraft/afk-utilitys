@@ -113,13 +113,13 @@ public class AntiAfk {
             } else {
                 // Server Mode: Manual Packet Send
                 if (client.getConnection() != null) {
-                    // 1.21.4 Constructor: Rot(yRot, xRot, onGround, horizontalCollision)
-                    // We use 'false' for horizontalCollision as a safe default.
-                    client.getConnection().send(new net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.Rot(
+                    // Delegated to version-specific helper to handle 3-arg vs 4-arg constructor
+                    // differences
+                    com.HelixCraft.afkutility.compat.VersionCompat.NETWORK.sendRotationPacket(
+                            client.getConnection(),
                             lastYaw,
                             (float) config.pitch,
-                            client.player.onGround(),
-                            false));
+                            client.player.onGround());
                 }
             }
         } else {

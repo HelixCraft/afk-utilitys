@@ -2,6 +2,7 @@ package com.HelixCraft.afkutility.features;
 
 import com.HelixCraft.afkutility.config.ConfigManager;
 import com.HelixCraft.afkutility.config.ModConfig;
+import com.HelixCraft.afkutility.compat.VersionCompat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,7 +36,7 @@ public class AutoEat {
             }
 
             // Check if current item is still food
-            if (client.player.getInventory().items.get(slot != -1 && slot != 40 ? slot : 0)
+            if (VersionCompat.INVENTORY.getItem(client.player.getInventory(), slot != -1 && slot != 40 ? slot : 0)
                     .get(DataComponents.FOOD) == null && slot != 40) {
                 stopEating(client);
                 return;
@@ -66,7 +67,7 @@ public class AutoEat {
     }
 
     private static void startEating(Minecraft client, ModConfig.AutoEat config) {
-        prevSlot = client.player.getInventory().selected;
+        prevSlot = VersionCompat.INVENTORY.getSelectedSlot(client.player.getInventory());
         changeSlot(client, slot);
         client.options.keyUse.setDown(true);
         if (client.gameMode != null) {
@@ -77,7 +78,7 @@ public class AutoEat {
 
     private static void stopEating(Minecraft client) {
         if (prevSlot != -1 && slot != 40) {
-            client.player.getInventory().selected = prevSlot;
+            VersionCompat.INVENTORY.setSelectedSlot(client.player.getInventory(), prevSlot);
         }
         client.options.keyUse.setDown(false);
         eating = false;
@@ -88,7 +89,7 @@ public class AutoEat {
     private static void changeSlot(Minecraft client, int newSlot) {
         if (newSlot == 40)
             return;
-        client.player.getInventory().selected = newSlot;
+        VersionCompat.INVENTORY.setSelectedSlot(client.player.getInventory(), newSlot);
         slot = newSlot;
     }
 
@@ -99,7 +100,7 @@ public class AutoEat {
         int missingHunger = 20 - client.player.getFoodData().getFoodLevel();
 
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = client.player.getInventory().getItem(i);
+            ItemStack stack = VersionCompat.INVENTORY.getItem(client.player.getInventory(), i);
             Item item = stack.getItem();
             FoodProperties food = stack.get(DataComponents.FOOD);
 

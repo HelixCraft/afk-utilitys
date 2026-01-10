@@ -1,11 +1,11 @@
 plugins {
-    id 'dev.architectury.loom' version '1.11-SNAPSHOT' apply false
+    id 'dev.architectury.loom' version '1.13-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.gradleup.shadow' version '8.3.6' apply false
 }
 
 // --- DYNAMIC VERSION CONFIGURATION ---
-def mcVersionData = [
+ext.mcVersionData = [
     // Format: "MC_VERSION": ["YARN_MAPPINGS", "LOADER_VERSION", "FABRIC_API_VERSION", "ARCHITECTURY_API_VERSION"]
     
     // 1.14 & 1.15 (Kein offizieller Architectury Support)
@@ -52,10 +52,10 @@ def mcVersionData = [
     "1.20.6":  ["1.20.6+build.3", "0.18.4", "0.100.8+1.20.6", "12.1.2"],
 
     // 1.21 (Architectury v13 - v15+)
-    "1.21":    ["1.21+build.9", "0.18.4", "0.102.0+1.21", "13.0.22"],
-    "1.21.1":  ["1.21.1+build.3", "0.18.4", "0.116.7+1.21.1", "13.0.27"],
+    "1.21":    ["1.21+build.9", "0.18.4", "0.102.0+1.21", "13.0.6"],
+    "1.21.1":  ["1.21.1+build.3", "0.18.4", "0.116.7+1.21.1", "13.0.8"],
     "1.21.2":  ["1.21.2+build.1", "0.18.4", "0.106.1+1.21.2", "14.0.3"],
-    "1.21.3":  ["1.21.3+build.2", "0.18.4", "0.114.1+1.21.3", "14.0.8"], // Hier ist die Version, die du gesehen hast
+    "1.21.3":  ["1.21.3+build.2", "0.18.4", "0.114.1+1.21.3", "14.0.3"], // Adjusted to known version
     "1.21.4":  ["1.21.4+build.8", "0.18.4", "0.119.4+1.21.4", "15.0.3"], // Offiziell v15 für 1.21.4
     
     // Future / Snapshot Estimations
@@ -71,17 +71,17 @@ def mcVersionData = [
 
 
 def activeVersion = project.active_mc_version.trim()
-if (!mcVersionData.containsKey(activeVersion)) {
-    throw new GradleException("Unsupported Minecraft version: '${activeVersion}'. Supported versions: ${mcVersionData.keySet()}")
+if (!rootProject.mcVersionData.containsKey(activeVersion)) {
+    throw new GradleException("Unsupported Minecraft version: '${activeVersion}'. Supported versions: ${rootProject.mcVersionData.keySet()}")
 }
 
 // Dynamically set project properties on all projects
 allprojects {
     ext.minecraft_version = activeVersion
-    ext.yarn_mappings     = mcVersionData[activeVersion][0]
-    ext.loader_version    = mcVersionData[activeVersion][1]
-    ext.fabric_api_version = mcVersionData[activeVersion][2]
-    ext.architectury_api_version = mcVersionData[activeVersion][3]
+    ext.yarn_mappings     = rootProject.mcVersionData[activeVersion][0]
+    ext.loader_version    = rootProject.mcVersionData[activeVersion][1]
+    ext.fabric_api_version = rootProject.mcVersionData[activeVersion][2]
+    ext.architectury_api_version = rootProject.mcVersionData[activeVersion][3]
     
     println "Project ${project.name}: minecraft_version=${ext.minecraft_version}, architectury_api=${ext.architectury_api_version}"
 
@@ -117,6 +117,10 @@ architectury {
 }
 
 subprojects {
+    // Skip configuration for version-specific modules as they manage their own dependencies
+    if (path.startsWith(":versions:")) {
+        return
+    }
     apply plugin: 'dev.architectury.loom'
 
     loom {

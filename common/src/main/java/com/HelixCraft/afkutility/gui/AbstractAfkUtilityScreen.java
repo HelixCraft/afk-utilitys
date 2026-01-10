@@ -12,22 +12,25 @@ import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
-public class AfkUtilityScreen extends Screen {
+public abstract class AbstractAfkUtilityScreen extends Screen {
         private final Screen parent;
-        private Tab currentTab = Tab.ANTI_AFK;
-        private final ModConfig.AntiAfk antiAfkConfig = ConfigManager.get().antiAfk;
-        private final ModConfig.AutoEat autoEatConfig = ConfigManager.get().autoEat;
-        private final ModConfig.AutoReconnect autoReconnectConfig = ConfigManager.get().autoReconnect;
-        private final ModConfig.AutoLog autoLogConfig = ConfigManager.get().autoLog;
+        protected Tab currentTab = Tab.ANTI_AFK;
+        protected final ModConfig.AntiAfk antiAfkConfig = ConfigManager.get().antiAfk;
+        protected final ModConfig.AutoEat autoEatConfig = ConfigManager.get().autoEat;
+        protected final ModConfig.AutoReconnect autoReconnectConfig = ConfigManager.get().autoReconnect;
+        protected final ModConfig.AutoLog autoLogConfig = ConfigManager.get().autoLog;
 
         private EditBox customMessageBox;
         private EditBox addItemBox;
-        private BlacklistList blacklistList;
+        protected net.minecraft.client.gui.components.ObjectSelectionList<?> blacklistList;
 
-        public AfkUtilityScreen(Screen parent) {
+        public AbstractAfkUtilityScreen(Screen parent) {
                 super(Component.literal("AFK Utility Config"));
                 this.parent = parent;
         }
+
+        protected abstract net.minecraft.client.gui.components.ObjectSelectionList<?> createBlacklistList(int width,
+                        int height, int y, int itemHeight);
 
         @Override
         protected void init() {
@@ -164,11 +167,8 @@ public class AfkUtilityScreen extends Screen {
                 y += 24;
 
                 this.addRenderableWidget(
-                                CycleButton.<ModConfig.AntiAfk.SpinMode>builder(mode -> Component.literal(mode.name()))
-                                                .withValues(ModConfig.AntiAfk.SpinMode.values())
-                                                .withInitialValue(antiAfkConfig.spinMode)
-                                                .create(xBase, y, configWidth, 20, Component.literal("Spin Mode"),
-                                                                (button, value) -> antiAfkConfig.spinMode = value));
+                                com.HelixCraft.afkutility.compat.VersionCompat.SCREEN_HELPER.createSpinModeButton(
+                                                xBase, y, configWidth, 20));
                 y += 24;
 
                 // Messages
@@ -215,12 +215,13 @@ public class AfkUtilityScreen extends Screen {
                 }).bounds(xBase + 155, y, 40, 20).build());
 
                 this.addRenderableWidget(Button.builder(Component.literal("Browse..."), button -> {
-                        this.minecraft.setScreen(new FoodSelectorScreen(this));
+                        this.minecraft.setScreen(com.HelixCraft.afkutility.compat.VersionCompat.SCREEN_HELPER
+                                        .createFoodSelectorScreen(this));
                 }).bounds(xBase + 200, y, 60, 20).build());
 
                 y += 45; // Leave room for label
 
-                blacklistList = new BlacklistList(this.minecraft, (this.width - sidebarWidth - 40) / 2,
+                blacklistList = createBlacklistList((this.width - sidebarWidth - 40) / 2,
                                 this.height - 100, y,
                                 20);
                 blacklistList.setX(xBase);
@@ -291,14 +292,14 @@ public class AfkUtilityScreen extends Screen {
                 }
         }
 
-        private enum Tab {
+        protected enum Tab {
                 ANTI_AFK,
                 AUTO_EAT,
                 AUTO_RECONNECT,
                 AUTO_LOG
         }
 
-        private static class IntSlider extends AbstractSliderButton {
+        protected static class IntSlider extends AbstractSliderButton {
                 private final int min;
                 private final int max;
                 private final Consumer<Integer> onChange;
@@ -330,7 +331,7 @@ public class AfkUtilityScreen extends Screen {
                 }
         }
 
-        private static class FloatSlider extends AbstractSliderButton {
+        protected static class FloatSlider extends AbstractSliderButton {
                 private final float min;
                 private final float max;
                 private final Consumer<Float> onChange;
@@ -368,54 +369,4 @@ public class AfkUtilityScreen extends Screen {
                 }
         }
 
-        private class BlacklistList
-                        extends net.minecraft.client.gui.components.ObjectSelectionList<BlacklistList.Entry> {
-                public BlacklistList(net.minecraft.client.Minecraft minecraft, int width, int height, int y,
-                                int itemHeight) {
-                        super(minecraft, width, height, y, itemHeight);
-                        for (String item : autoEatConfig.blacklist) {
-                                this.addEntry(new Entry(item));
-                        }
-                }
-
-                @Override
-                public int getRowWidth() {
-                        return this.width - 20;
-                }
-
-                private class Entry extends net.minecraft.client.gui.components.ObjectSelectionList.Entry<Entry> {
-                        private final String itemName;
-                        private final Button removeButton;
-
-                        public Entry(String itemName) {
-                                this.itemName = itemName;
-                                this.removeButton = Button.builder(Component.literal("X"), button -> {
-                                        autoEatConfig.blacklist.remove(itemName);
-                                        AfkUtilityScreen.this.clearWidgets();
-                                        AfkUtilityScreen.this.init();
-                                }).bounds(0, 0, 20, 20).build();
-                        }
-
-                        @Override
-                        public void render(GuiGraphics graphics, int index, int y, int x, int entryWidth,
-                                        int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-                                graphics.drawString(AfkUtilityScreen.this.font, itemName, x + 5, y + 5, 0xFFFFFF);
-                                removeButton.setX(x + entryWidth - 25);
-                                removeButton.setY(y);
-                                removeButton.render(graphics, mouseX, mouseY, tickDelta);
-                        }
-
-                        @Override
-                        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                                if (removeButton.mouseClicked(mouseX, mouseY, button))
-                                        return true;
-                                return super.mouseClicked(mouseX, mouseY, button);
-                        }
-
-                        @Override
-                        public Component getNarration() {
-                                return Component.literal(itemName);
-                        }
-                }
-        }
 }
