@@ -113,20 +113,13 @@ public class AntiAfk {
             } else {
                 // Server Mode: Manual Packet Send
                 if (client.getConnection() != null) {
-                    // API Change: 1.21 and 1.21.1 use 3 params. 1.21.2+ use 4 params.
-                    //? if 1.21 || 1.21.1 {
-                    //client.getConnection().send(new net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.Rot(
-                            //lastYaw,
-                            //(float) config.pitch,
-                            //client.player.onGround()));
-                    //?} else {
-                    client.getConnection().send(new
-                    net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.Rot(
-                    lastYaw,
-                    (float) config.pitch,
-                    client.player.onGround(),
-                    false)); // 4th param: horizontal collision flag
-                    //?}
+                    // 1.21.4 Constructor: Rot(yRot, xRot, onGround, horizontalCollision)
+                    // We use 'false' for horizontalCollision as a safe default.
+                    client.getConnection().send(new net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.Rot(
+                            lastYaw,
+                            (float) config.pitch,
+                            client.player.onGround(),
+                            false));
                 }
             }
         } else {

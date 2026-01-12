@@ -19,23 +19,15 @@ public class AFKUtilityClient implements ClientModInitializer {
     public void onInitializeClient() {
         ConfigManager.load();
 
-        //? if 1.21.9 || 1.21.10 || 1.21.11 {
         openConfigKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.afkutility.open_config",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_K,
-                KeyMapping.Category.MISC));
-        //?} else {
-        /*openConfigKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.afkutility.open_config",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_K,
                 "category.afkutility.general"));
-        *///?}
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (openConfigKey.consumeClick()) { 
-                client.setScreen(new AfkUtilityScreen(client.screen));
+            if (openConfigKey.consumeClick()) { // wasPressed -> consumeClick
+                client.setScreen(new AfkUtilityScreen(client.screen)); // currentScreen -> screen
             }
 
             AntiAfk.tick(client);
